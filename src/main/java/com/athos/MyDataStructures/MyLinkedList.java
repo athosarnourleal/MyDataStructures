@@ -5,12 +5,10 @@ package com.athos.MyDataStructures;
 public class MyLinkedList<T> {
 	
 	private class Node {
-		public Node previous;
 		public T data;
 		public Node next;
 		
 		public Node(T data, Node next) {
-			this.previous = previous;
 			this.data = data;
 			this.next = next;
 		}
@@ -29,10 +27,11 @@ public class MyLinkedList<T> {
 	public void addStart(T value) {
 		if (firstNode == null) {
 			firstNode = new Node(value, null);
-			
-		} else {
-			firstNode = new Node(value, firstNode);
+			return;
 		}
+		
+		firstNode = new Node(value, firstNode);
+		
 		size++;
 	}
 	
@@ -52,9 +51,8 @@ public class MyLinkedList<T> {
 	}
 	
 	public void add(T value, int index) {
-		
 		if (index < 0 || index >= size) {
-			throw new IndexOutOfBoundsException("indice "+index+" não existe em lista de tamanho "+size);
+			throw new IndexOutOfBoundsException("index "+index+" does not exist in a list of size "+size);
 		}
 		
 		Node current = firstNode;
@@ -72,6 +70,45 @@ public class MyLinkedList<T> {
 		size++;
 	}
 	
+	
+	public void removeFirst() {
+		if (this.firstNode == null) {
+			throw new IndexOutOfBoundsException("you cannot remove nodes froms a empty list");
+		}
+		
+		firstNode = firstNode.next;
+	}
+		
+	public void removeLast() {
+		if (this.firstNode == null) {
+			throw new IndexOutOfBoundsException("you cannot remove nodes froms a empty list");
+		}
+		
+		Node secondTolast = firstNode;
+		while(secondTolast.next.next != null) {
+			secondTolast = secondTolast.next;
+		}
+		
+		secondTolast.next = null;
+		size--;
+	}
+	
+	public void remove(int index) {
+		if (index < 0 || index >= size) {
+			throw new IndexOutOfBoundsException("index "+index+" does not exist in a list of size "+size);
+		} else if (index == 0) {
+			removeFirst();
+		} else if (index == size-1) {
+			removeLast();
+		}
+		
+		Node cur = firstNode;
+		int i = 1;
+		while(i++ < index) {
+			cur = cur.next;
+		}
+		
+	}
 	
 	public int size() {
 		return size;
