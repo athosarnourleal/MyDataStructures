@@ -1,7 +1,6 @@
 package com.athos.MyDataStructures;
 
 
-@SuppressWarnings("unused") // remove later
 public class MyLinkedList<T> {
 	
 	private class Node {
@@ -15,47 +14,51 @@ public class MyLinkedList<T> {
 	}
 	
 	private int size;
-	
 	private Node firstNode;
 	
 	
 	public MyLinkedList() {
-		firstNode = null;
-		size = 0;
+		this.firstNode = null;
+		this.size = 0;
 	}
 	
-	public void addStart(T value) {
-		if (firstNode == null) {
-			firstNode = new Node(value, null);
+	public void addFirst(T value) {
+		if (this.firstNode == null) {
+			this.firstNode = new Node(value, null);
+			size++;
 			return;
 		}
 		
-		firstNode = new Node(value, firstNode);
+		Node aux = this.firstNode;
+		this.firstNode = new Node(value, aux);
 		
-		size++;
+		this.size++;
 	}
 	
 	public void addLast(T value) {
-		if (firstNode == null) {
-			firstNode = new Node(value, null);
+		if (this.firstNode == null) {
+			this.firstNode = new Node(value, null);
+			size++;
+			return;
 		}
 		
 		// find last
-		Node last = firstNode;
+		Node last = this.firstNode;
 		while(last.next != null) {
 			last = last.next;
 		}
+		
 		last.next = new Node(value, null);
 		
-		size++;
+		this.size++;
 	}
 	
 	public void add(T value, int index) {
-		if (index < 0 || index >= size) {
+		if (index < 0 || index >= this.size) {
 			throw new IndexOutOfBoundsException("index "+index+" does not exist in a list of size "+size);
 		}
 		
-		Node current = firstNode;
+		Node current = this.firstNode;
 		
 		int i = 0;
 		while (i < index) {
@@ -67,7 +70,8 @@ public class MyLinkedList<T> {
 		}
 		
 		current.next = new Node(value, current.next);
-		size++;
+		
+		this.size++;
 	}
 	
 	
@@ -76,38 +80,82 @@ public class MyLinkedList<T> {
 			throw new IndexOutOfBoundsException("you cannot remove nodes froms a empty list");
 		}
 		
-		firstNode = firstNode.next;
+		this.firstNode = this.firstNode.next;
+		this.size--;
 	}
 		
 	public void removeLast() {
 		if (this.firstNode == null) {
 			throw new IndexOutOfBoundsException("you cannot remove nodes froms a empty list");
+		} else if (this.size == 1)  {
+			removeFirst();
+			return;
 		}
 		
-		Node secondTolast = firstNode;
+		Node secondTolast = this.firstNode;
 		while(secondTolast.next.next != null) {
 			secondTolast = secondTolast.next;
 		}
 		
 		secondTolast.next = null;
-		size--;
+		this.size--;
 	}
 	
 	public void remove(int index) {
-		if (index < 0 || index >= size) {
+		if (index < 0 || index >= this.size) {
 			throw new IndexOutOfBoundsException("index "+index+" does not exist in a list of size "+size);
+			
 		} else if (index == 0) {
 			removeFirst();
-		} else if (index == size-1) {
+			return;
+		} else if (index == this.size-1) {
 			removeLast();
+			return;
 		}
 		
-		Node cur = firstNode;
+		Node previousToIndex = this.firstNode;
 		int i = 1;
 		while(i++ < index) {
-			cur = cur.next;
+			previousToIndex = previousToIndex.next;
 		}
 		
+		previousToIndex.next = previousToIndex.next.next; // unlink
+		
+		size--;
+	}
+	
+	public T get(int index) {
+		if (index < 0 || index >= size) {
+			throw new IndexOutOfBoundsException("index "+index+" does not exist in a list of size "+size);
+		}
+		
+		int i = 0;
+		Node cur = this.firstNode;
+		while (i < index) {
+			cur = cur.next;
+			i++;
+		}
+		
+		return cur.data;
+	}
+	
+	public void reverse() {
+		Node previous = null;
+		Node cur = this.firstNode;
+		Node next = this.firstNode.next;
+		
+		while (next != null) {
+			cur.next = previous; // link to previous
+			
+			// move
+			previous = cur;
+			cur = next;
+			next = next.next;
+		}
+		
+		cur.next = previous; // link to previous
+		
+		this.firstNode = cur;
 	}
 	
 	public int size() {

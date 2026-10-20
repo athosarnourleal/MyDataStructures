@@ -14,21 +14,21 @@ public class MyArrayList<T> {
 	}
 
 	public boolean add(T nval) {
-		assertSizeIsValid(++curSize);
-		data[curSize-1] = nval;
+		assertSizeIsValid(++this.curSize);
+		this.data[this.curSize-1] = nval;
 		return true; 
 	}
 	
 	public void add(int index, T nval) {
-		if (index < 0 && index >= size()+1)
-			throw new IndexOutOfBoundsException("index "+index+" invalido para uma lista de tamanho "+size());
+		if (index < 0 && index >= this.curSize+1)
+			throw new IndexOutOfBoundsException("index "+index+" invalido para uma lista de tamanho "+this.curSize);
 		
-		assertSizeIsValid(++curSize);
-		for(int i = index+1; i <= curSize; i++) {
-			data[i] = data[i-1];
+		assertSizeIsValid(++this.curSize);
+		for(int i = index+1; i <= this.curSize; i++) {
+			this.data[i] = this.data[i-1];
 		}
 		
-		data[index] = nval;
+		this.data[index] = nval;
 	}
 
 	public void remove(T instance) {
@@ -36,27 +36,27 @@ public class MyArrayList<T> {
 	}
 
 	public T remove(int index) {
-		if (index < 0 || index >= size()) 
-			throw new IndexOutOfBoundsException("index "+index+" invalido para uma lista de tamanho "+size());
+		if (index < 0 || index >= curSize) 
+			throw new IndexOutOfBoundsException("index "+index+" invalido para uma lista de tamanho "+curSize);
 		
-		T removed = data[index];
+		T removed = this.data[index];
 		
-		for (int i = index; i < curSize-1; i++) {
-			data[index] = data[index+1];
+		for (int i = index; i < this.curSize-1; i++) {
+			this.data[index] = this.data[index+1];
 		}
 		
-		curSize--;
+		this.curSize--;
 		
 		return removed;
 	}
 
 	public void clear() {
-		curSize = 0;
+		this.curSize = 0;
 	}
 
 	public boolean contains(T instance) {
 		for (int i = 0; i < curSize; i++) {
-			if (data[i].equals(instance)) {
+			if (this.data[i].equals(instance)) {
 				return true;
 			}
 		}
@@ -65,20 +65,20 @@ public class MyArrayList<T> {
 
 	public T get(int index) {
 		if (index < 0 || index >= size())
-			throw new IndexOutOfBoundsException("index "+index+" invalido para uma lista de tamanho "+size());
+			throw new IndexOutOfBoundsException("index "+index+" invalido para uma lista de tamanho "+this.curSize);
 		
 		
-		return data[index];
+		return this.data[index];
 	}
 
 	public T set(int index, T nval) {
-		return (data[index] = nval);
+		return (this.data[index] = nval);
 	}
 
 	public int indexOf(T instance) {
-		for (int i = 0; i < curSize; i++) {
+		for (int i = 0; i < this.curSize; i++) {
 			
-			if (data[i].equals(instance))  
+			if (this.data[i].equals(instance))  
 				return i;
 			
 		}
@@ -87,23 +87,23 @@ public class MyArrayList<T> {
 	}
 
 	public boolean isEmpty() {
-		return (size() == 0);
+		return (this.curSize == 0);
 	}
 
 	public int size() {
-		return curSize;
+		return this.curSize;
 	}
 	
 	public Object[] toArray() {
-		return Arrays.copyOf(data, size());
+		return Arrays.copyOf(this.data, this.curSize);
 	}
 	
 	@SuppressWarnings("unchecked")
 	public T[] toArray(T[] narray) {
-		if (narray.length < curSize) 
-			return (T[]) Arrays.copyOf(data, size(), narray.getClass());
+		if (narray.length < this.curSize) 
+			return (T[]) Arrays.copyOf(this.data, this.curSize, narray.getClass());
 		
-		System.arraycopy(data, 0, narray, 0, size());
+		System.arraycopy(data, 0, narray, 0, curSize);
 		for (int i = size(); i < narray.length; i++) {
 			narray[i] = null;
 		}
@@ -112,8 +112,8 @@ public class MyArrayList<T> {
 	}
 	
 	private void assertSizeIsValid(int nSize) {
-		while (nSize > data.length) {
-			data = Arrays.copyOf(data, data.length+CHUNK_INCREMENT_SIZE);
+		while (nSize > this.data.length) {
+			this.data = Arrays.copyOf(this.data, this.data.length+CHUNK_INCREMENT_SIZE);
 		}
 	}
 
@@ -133,15 +133,15 @@ public class MyArrayList<T> {
 		
 		while (sorted == false) {
 			sorted = true;
-			for (int i = 0; i < size()-1; i++) {
-				if (func.isFirstBigger(data[i], data[i+1])) {
+			for (int i = 0; i < this.curSize-1; i++) {
+				if (func.isFirstBigger(this.data[i], this.data[i+1])) {
 					// if the smaller index holds the biggest value --> swap
 					sorted = false;
 					
 					// swap
-					T aux = data[i];
-					data[i] = data[i+1];
-					data[i+1] = aux;
+					T aux = this.data[i];
+					this.data[i] = this.data[i+1];
+					this.data[i+1] = aux;
 				}
 			}
 		}
@@ -160,17 +160,18 @@ public class MyArrayList<T> {
 			}
 			
 			// put the smallest in its place by swapping with the current element in it
-			T aux = data[sortedElementNum];
-			data[sortedElementNum] = data[smallestFound];
-			data[smallestFound] = aux;
+			T aux = this.data[sortedElementNum];
+			this.data[sortedElementNum] = this.data[smallestFound];
+			this.data[smallestFound] = aux;
 			
 			sortedElementNum++;
 		}
 	}
 	
 	public void mergeSort(ComparingFunction<T> func) {
-		data = mergeSortRecursion(Arrays.copyOf(data, curSize), func, 0);
+		data = mergeSortRecursion(Arrays.copyOf(data, this.curSize), func, 0);
 	}
+	
 	@SuppressWarnings("unchecked")
 	private T[] mergeSortRecursion(T[] curArray, ComparingFunction<T> func, int level) {
 		
@@ -222,7 +223,7 @@ public class MyArrayList<T> {
 	
 
 	public void quickSort(ComparingFunction<T> func) {
-		quickSortRecursion(0, size()-1, func);
+		quickSortRecursion(0, this.curSize-1, func);
 	
 	}
 	private void quickSortRecursion(int subArrayStartIndex, int subArrayLastIndex, ComparingFunction<T> func) {
@@ -231,23 +232,23 @@ public class MyArrayList<T> {
 		}
 
 		int pivotIndex = subArrayLastIndex;
-		T pivotValue = data[pivotIndex];
+		T pivotValue = this.data[pivotIndex];
 		
 		for (int i = subArrayStartIndex; i < pivotIndex; i++) {
-			if (func.isFirstBigger(data[i], pivotValue)) {
+			if (func.isFirstBigger(this.data[i], pivotValue)) {
 				// throw values bigger than the pivot to the end
 				
-				T aux = data[i];
+				T aux = this.data[i];
 				
 				for (int j = i; j < subArrayLastIndex; j++) {
-					data[j] = data[j+1];
+					this.data[j] = this.data[j+1];
 					
 					if (j+1 == pivotIndex) { /// update pivot index if it has been moved
 						pivotIndex--;
 					}
 				}
 				
-				data[subArrayLastIndex] = aux;
+				this.data[subArrayLastIndex] = aux;
 				i--;
 			}
 		}
@@ -259,39 +260,40 @@ public class MyArrayList<T> {
 		quickSortRecursion(pivotIndex+1, subArrayLastIndex, func);
 	}
 	
-	
 	public void insertionSort(ComparingFunction<T> func) {
-		
-		for (int i = 1; i < data.length; i++) {
-			
-			// find placement
-			
-			int j = i-1;
-			for (; j >= 0; j--) {
-				if (func.isFirstBigger(data[j], data[i])) {
-					break;
+		for(int i = 0; i < size(); i++) {
+			// find biggest
+			int smallest = i;
+			for(int j = i; j < size(); j++) {
+				if (func.isFirstBigger(this.data[smallest], this.data[j])) {
+					smallest = j;
 				}
 			}
 			
-			j++;
-			
-			// insert
-			
-			T aux = data[i];
-			
-			for (int c = j; c < i; c++) {
-				data[c+1] = data[c];
-			}
-			
-			data[j] = aux;
-			
+			// swap
+			T aux = this.data[i];
+			this.data[i] = this.data[smallest];
+			this.data[smallest] = aux;
 		}
 		
 	}
 	
 	public void shellSort(ComparingFunction<T> func) {
 		
-		// TODO
+		for (int gap = this.curSize/2; gap > 0; gap /= 2) {
+			
+			for (int i = gap; i < this.curSize; i++) {
+				T temp = this.data[i];
+				int j = i;
+				
+				while (j >= gap && func.isFirstBigger(this.data[j - gap], temp)) {
+					this.data[j] = this.data[j - gap];
+                    j -= gap;
+                }
+				
+				this.data[j] = temp;
+			}
+		}
 		
 	}
 	
